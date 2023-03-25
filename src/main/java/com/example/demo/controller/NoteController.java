@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.JSON;
 import com.example.demo.model.Note;
 import com.example.demo.repository.NoteRepository;
 import com.example.demo.repository.UserRepository;
@@ -35,4 +36,23 @@ public class NoteController {
         noteRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    private ResponseEntity<Note> getNoteResponseEntity(Note note, String title, String content, boolean veryimportant, boolean important, boolean shopping, boolean travel, boolean work, @RequestBody JSON request_) {
+        note.setTitle(title);
+        note.setContent(content);
+        note.setVeryimportant(veryimportant);
+        note.setImportant(important);
+        note.setShopping(shopping);
+        note.setTravel(travel);
+        note.setWork(work);
+        return new ResponseEntity<>(noteRepository.save(note), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{noteId}")
+    public ResponseEntity<Note> updateNote(@PathVariable("noteId") long id, @RequestBody JSON request_) {
+        System.out.println(id);
+        Note note = noteRepository.findById(id).orElseThrow();
+        return getNoteResponseEntity(note, request_.getTitle(), request_.getContent(), request_.isVeryimportant(), request_.isImportant(), request_.isShopping(), request_.isTravel(), request_.isWork(), request_);
+    }
+
 }
