@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 
 // @CrossOrigin(origins = "http://localhost:3000")
@@ -55,4 +56,17 @@ public class NoteController {
         return getNoteResponseEntity(note, request_.getTitle(), request_.getContent(), request_.isVeryimportant(), request_.isImportant(), request_.isShopping(), request_.isTravel(), request_.isWork(), request_);
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<Note> createNote(@RequestBody JSON request_) {
+        Note note = new Note();
+        System.out.println(request_.getUser_id());
+        note.setUser(userRepository.findById(request_.getUser_id()));
+        return getNoteResponseEntity(note, request_.getTitle(), request_.getContent(), request_.isVeryimportant(), request_.isImportant(), request_.isShopping(), request_.isTravel(), request_.isWork(), request_);
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Note>> getAllNotes(@PathVariable(value = "id") int id) {
+        List<Note> notes = noteRepository.findByUser_Id(id);
+        return new ResponseEntity<>(notes, HttpStatus.OK);
+    }
 }
